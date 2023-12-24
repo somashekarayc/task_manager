@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
@@ -13,6 +14,19 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         return $this->success(['profile' => new UserResource($user)]);
+    }
 
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string'],
+        ]);
+
+        /** @var User */
+        $user = Auth::user();
+        $user->name = $request->name;
+        $user->save();
+
+        return $this->success(['profile' => new UserResource($user)]);
     }
 }
