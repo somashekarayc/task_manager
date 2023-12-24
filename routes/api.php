@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -11,3 +12,9 @@ Route::prefix('auth')->controller(AuthController::class)->group(function(){
     Route::middleware('auth:sanctum')->post('/sign-out', 'signOut');
 });
 
+Route::middleware('auth:sanctum')->group(function(){
+    Route::prefix('profile')->controller(ProfileController::class)->group(function(){
+        Route::get('/','getProfile');
+        Route::put('/', 'updateProfile');
+    });
+});
