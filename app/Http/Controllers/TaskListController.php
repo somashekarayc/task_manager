@@ -35,15 +35,21 @@ class TaskListController extends Controller
 
     public function show(TaskList $taskList)
     {
+        abort_unless($taskList->user_id === Auth::id(), 403);
+
         return $this->success(['task_list', new TaskListResource($taskList),]);
     }
     public function tasks(TaskList $taskList)
     {
+        abort_unless($taskList->user_id === Auth::id(), 403);
+
         return $this->success(['tasks', TaskResource::collection($taskList->tasks),]);
     }
 
     public function addTask(Request $request, TaskList $taskList)
     {
+        abort_unless($taskList->user_id === Auth::id(), 403);
+
         $request->validate(['title' => ['required', 'string'], 'details' => ['string', 'required']]);
 
         $task = new Task();
@@ -59,6 +65,8 @@ class TaskListController extends Controller
 
     public function update(Request $request, TaskList $taskList)
     {
+        abort_unless($taskList->user_id === Auth::id(), 403);
+
         $request->validate([
             'title' => ['required', 'string'],
         ]);
@@ -71,6 +79,8 @@ class TaskListController extends Controller
 
     public function destroy(TaskList $taskList)
     {
+        abort_unless($taskList->user_id === Auth::id(), 403);
+
         $taskList->delete();
 
         return $this->success();

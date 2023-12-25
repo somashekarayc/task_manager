@@ -35,11 +35,15 @@ class TaskController extends Controller
 
     public function show(Task $task)
     {
+        abort_unless($task->user_id === Auth::id(), 403);
+
         return $this->success(['task' => new TaskResource($task)]);
     }
 
     public function update(Request $request, Task $task)
     {
+        abort_unless($task->user_id === Auth::id(), 403);
+
         $request->validate(['title' => ['required', 'string'], 'details' => ['nullable', 'string']]);
 
         $task->title = $request->title;
@@ -51,6 +55,8 @@ class TaskController extends Controller
 
     public function updateStatus(Request $request, Task $task)
     {
+        abort_unless($task->user_id === Auth::id(), 403);
+
         $request->validate(['status' => ['required', 'string', new Enum(TaskStatus::class)]]);
 
         $task->status = $request->status;
@@ -62,6 +68,8 @@ class TaskController extends Controller
 
     public function destroy(Task $task)
     {
+        abort_unless($task->user_id === Auth::id(), 403);
+
         $task->delete();
 
         return $this->success();
