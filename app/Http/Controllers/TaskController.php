@@ -11,17 +11,13 @@ use Illuminate\Validation\Rules\Enum;
 
 class TaskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         return $this->success(['tasks' => TaskResource::collection(Task::where('user_id', Auth::id())->get()),]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         $request->validate(['title' => ['required', 'string'], 'details' => ['string', 'required']]);
@@ -34,20 +30,14 @@ class TaskController extends Controller
         $task->save();
 
         return $this->success(['task' => new TaskResource($task)]);
-
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(Task $task)
     {
         return $this->success(['task' => new TaskResource($task)]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Task $task)
     {
         $request->validate(['title' => ['required', 'string'], 'details' => ['nullable', 'string']]);
@@ -57,7 +47,6 @@ class TaskController extends Controller
         $task->save();
 
         return $this->success(['task' => new TaskResource($task)]);
-
     }
 
     public function updateStatus(Request $request, Task $task)
@@ -68,12 +57,9 @@ class TaskController extends Controller
         $task->save();
 
         return $this->success(['task' => new TaskResource($task)]);
-
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(Task $task)
     {
         $task->delete();

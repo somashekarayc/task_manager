@@ -20,7 +20,11 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::put('/', 'updateProfile');
     });
 
+    Route::get('/task-lists/{task_list}/tasks', [TaskListController::class, 'tasks']);
+    Route::post('/task-lists/{task_list}/tasks', [TaskListController::class, 'addTask']);
+
     Route::post('/tasks/{task}/status', [TaskController::class, 'updateStatus']);
+
     Route::apiResource('/task-lists', TaskListController::class);
     Route::apiResource('/tasks', TaskController::class);
 });
