@@ -29,7 +29,6 @@ class TaskListController extends Controller
         $taskList = new TaskList();
         $taskList->user_id = Auth::id();
         $taskList->title = $request->title;
-
         $taskList->save();
 
         return $this->success(['task_list' => new TaskListResource($taskList),]);
