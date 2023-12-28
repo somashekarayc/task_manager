@@ -12,9 +12,15 @@ use Illuminate\Validation\Rules\Enum;
 class TaskController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $paginated = Task::where('user_id', Auth::id())->paginate($this->itemsPerPage);
+        $request->validate([
+            'sort_by' => ['nullable', 'in:created_at,updated_at,title,details,status'],
+            'sort_dir' => ['nullable', 'in:asc,desc'],
+        ]);
+        $paginated = Task::where('user_id', Auth::id())
+        ->orderBy($request->sort_by ?? $this->sortBy, $request->sort_dir ?? $this->sortDir)
+        ->paginate($this->itemsPerPage);
 
         return $this->success([
             'tasks' => TaskResource::collection($paginated),

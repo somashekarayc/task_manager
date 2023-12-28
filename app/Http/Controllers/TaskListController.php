@@ -13,9 +13,16 @@ use App\Http\Resources\TaskListResource;
 class TaskListController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $paginated = TaskList::where('user_id', Auth::id())->paginate($this->itemsPerPage);
+        $request->validate([
+            'sort_by' => ['nullable', 'in:created_at,updated_at,title'],
+            'sort_dir' => ['nullable', 'in:asc,desc'],
+        ]);
+
+        $paginated = TaskList::where('user_id', Auth::id())
+        ->orderBy($request->sort_by ?? $this->sortBy, $request->sort_dir ?? $this->sortDir)
+        ->paginate($this->itemsPerPage);
 
         return $this->success([
             'task_lists' => TaskListResource::collection($paginated),
