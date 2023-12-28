@@ -14,7 +14,14 @@ class TaskController extends Controller
 
     public function index()
     {
-        return $this->success(['tasks' => TaskResource::collection(Task::where('user_id', Auth::id())->get()),]);
+        $paginated = Task::where('user_id', Auth::id())->paginate($this->itemsPerPage);
+
+        return $this->success([
+            'tasks' => TaskResource::collection($paginated),
+            'total' => $paginated->total(),
+            'page' => $paginated->currentPage(),
+            'lastPage' => $paginated->lastPage(),
+        ]);
     }
 
 
@@ -74,4 +81,5 @@ class TaskController extends Controller
 
         return $this->success();
     }
+
 }
