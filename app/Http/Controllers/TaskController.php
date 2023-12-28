@@ -18,6 +18,7 @@ class TaskController extends Controller
             'sort_by' => ['nullable', 'in:created_at,updated_at,title,details,status'],
             'sort_dir' => ['nullable', 'in:asc,desc'],
             'search' => ['nullable', 'string'],
+            'status' => ['nullable', 'string', new Enum(TaskStatus::class)],
         ]);
 
         $query = Task::where('user_id', Auth::id());
@@ -31,6 +32,10 @@ class TaskController extends Controller
             });
         }
 
+        if($request->status ?? false)
+        {
+            $query->where('status', $request->status);
+        }
 
         $paginated = $query
         ->orderBy($request->sort_by ?? $this->sortBy, $request->sort_dir ?? $this->sortDir)
