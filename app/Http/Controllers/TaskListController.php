@@ -18,9 +18,17 @@ class TaskListController extends Controller
         $request->validate([
             'sort_by' => ['nullable', 'in:created_at,updated_at,title'],
             'sort_dir' => ['nullable', 'in:asc,desc'],
+            'search' => ['nullable', 'string'],
         ]);
 
-        $paginated = TaskList::where('user_id', Auth::id())
+        $query = TaskList::where('user_id', Auth::id());
+
+        if($request->search ?? false)
+        {
+            $query->where('title', 'LIKE', '%' . $request->search . '%', );
+        }
+
+        $paginated = $query
         ->orderBy($request->sort_by ?? $this->sortBy, $request->sort_dir ?? $this->sortDir)
         ->paginate($this->itemsPerPage);
 

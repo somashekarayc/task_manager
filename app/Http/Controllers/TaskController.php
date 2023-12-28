@@ -17,8 +17,22 @@ class TaskController extends Controller
         $request->validate([
             'sort_by' => ['nullable', 'in:created_at,updated_at,title,details,status'],
             'sort_dir' => ['nullable', 'in:asc,desc'],
+            'search' => ['nullable', 'string'],
         ]);
-        $paginated = Task::where('user_id', Auth::id())
+
+        $query = Task::where('user_id', Auth::id());
+
+        if($request->search ?? false)
+        {
+            $query->where(function ($q) use ($request){
+                $q->orWhere('title', 'LIKE', '%' . $request->search . '%');
+                $q->orWhere('details', 'LIKE', '%' . $request->search . '%');
+                $q->orWhere('status', 'LIKE', '%' . $request->search . '%');
+            });
+        }
+
+
+        $paginated = $query
         ->orderBy($request->sort_by ?? $this->sortBy, $request->sort_dir ?? $this->sortDir)
         ->paginate($this->itemsPerPage);
 
